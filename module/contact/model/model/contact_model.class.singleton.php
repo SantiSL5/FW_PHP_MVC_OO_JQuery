@@ -1,13 +1,11 @@
 <?php 
 
-class menu_bll {
-    private $dao;
-    // private $db;
+class contact_model {
+    private $bll;
     static $_instance;
 
     private function __construct() {
-        $this->dao = menu_dao::getInstance();
-        //$this->db = db::getInstance();
+        $this->bll = contact_bll::getInstance();
     }
 
     public static function getInstance() {
@@ -17,8 +15,8 @@ class menu_bll {
         return self::$_instance;
     }
 
-    public function load_search_BLL() {
-        return $this->dao->search();
+    public function contact() {
+        return $this->bll->contact_BLL();
     }
 }
 

@@ -53,30 +53,34 @@ function showSecundaryCarousel() {
 }
 
 function loadMainCarousel() {
-    ajaxPromise('?page=home&op=carousel','GET','JSON').then(function(data){
-        $('<div></div>').attr({'id':'main-carousel','class':'owl-carousel'}).appendTo('#home');
-        for (let i = 0; i < data.length; i++) {
-            $('<div></div>').attr({'id':data[i]['category_name']+"div"}).appendTo('#main-carousel');
-            $('<img>').attr({'src':data[i]['img']}).appendTo('#'+data[i]['category_name']+"div");
-            $('<button></button>').attr({'id':data[i]['category_name'],'class':'category'}).text(data[i]['category_name']).appendTo('#'+data[i]['category_name']+"div");
-        }
-        showMainCarousel();
-    }).catch(function(textStatus){
-            console.log(textStatus);
+    friendlyURL('?page=home&op=carousel').then(function(url) {
+        ajaxPromise(url,'GET','JSON').then(function(data){
+            $('<div></div>').attr({'id':'main-carousel','class':'owl-carousel'}).appendTo('#home');
+            for (let i = 0; i < data.length; i++) {
+                $('<div></div>').attr({'id':data[i]['category_name']+"div"}).appendTo('#main-carousel');
+                $('<img>').attr({'src':data[i]['img']}).appendTo('#'+data[i]['category_name']+"div");
+                $('<button></button>').attr({'id':data[i]['category_name'],'class':'category'}).text(data[i]['category_name']).appendTo('#'+data[i]['category_name']+"div");
+            }
+            showMainCarousel();
+        }).catch(function(textStatus){
+                console.log(textStatus);
+        });
     });
 };
 
 function loadSecundaryCarousel() {
-    ajaxPromise('?=home/plataforms','GET','JSON').then(function(data){
-        for (let i = 0; i < data.length; i++) {
-            $('<div></div>').attr({'id':data[i]['plataforma']+"div",'class':'plataformdiv'}).appendTo('#secundary-carousel');
-            $('<img>').attr({'src':data[i]['img']}).appendTo('#'+data[i]['plataforma']+"div");
-            $('<h1></h1>').text(data[i]['plataforma']).appendTo('#'+data[i]['plataforma']+"div");
-            $('<button></button>').attr({'id':data[i]['plataforma'],'class':'plataform'}).text(data[i]['plataforma']).appendTo('#'+data[i]['plataforma']+"div");
-        }
-        showSecundaryCarousel();
-    }).catch(function(textStatus){
-        console.log(textStatus);
+    friendlyURL('?page=home&op=plataforms').then(function(url) {
+        ajaxPromise(url,'GET','JSON').then(function(data){
+            for (let i = 0; i < data.length; i++) {
+                $('<div></div>').attr({'id':data[i]['plataforma']+"div",'class':'plataformdiv'}).appendTo('#secundary-carousel');
+                $('<img>').attr({'src':data[i]['img']}).appendTo('#'+data[i]['plataforma']+"div");
+                $('<h1></h1>').text(data[i]['plataforma']).appendTo('#'+data[i]['plataforma']+"div");
+                $('<button></button>').attr({'id':data[i]['plataforma'],'class':'plataform'}).text(data[i]['plataforma']).appendTo('#'+data[i]['plataforma']+"div");
+            }
+            showSecundaryCarousel();
+        }).catch(function(textStatus){
+            console.log(textStatus);
+        });
     });
 };
 

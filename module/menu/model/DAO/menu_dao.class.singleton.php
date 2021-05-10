@@ -1,8 +1,20 @@
 <?php
 
-    class DAOMenu{
-        function search($con){
-            $nombre=$con['nombre'];
+    class menu_dao{
+        static $_instance;
+
+        private function __construct() {
+        }
+
+        public static function getInstance() {
+            if(!(self::$_instance instanceof self)){
+                self::$_instance = new self();
+            }
+            return self::$_instance;
+        }
+        
+        function search(){
+            $nombre=$_POST['nombre'];
             $sql = "SELECT DISTINCT nombre FROM videogames WHERE nombre LIKE '%$nombre%'";
             
             $conexion = connect::con();

@@ -4,7 +4,7 @@ class common {
     function loadError() {
         require_once (VIEW_PATH_INC . 'top_page.php');
         require_once (VIEW_PATH_INC . 'menu.html');
-        require_once (VIEW_PATH_INC . 'error404.html');
+        require_once (VIEW_PATH_INC . '404.html');
         require_once (VIEW_PATH_INC . 'footer.html');
     }// end_loadError
     
@@ -26,7 +26,7 @@ class common {
         if (file_exists($model)) {
             include_once($model);
             $modelClass = $model_name;
-
+            
             if (!method_exists($modelClass, $function)){
                 throw new Exception();
             }
@@ -38,13 +38,6 @@ class common {
             throw new Exception();
         }
     }// end_accessModel
-
-    function generate_Token_secure($longitud){
-        if ($longitud < 4) {
-            $longitud = 4;
-        }
-        return bin2hex(openssl_random_pseudo_bytes(($longitud - ($longitud % 2)) / 2));
-    }// end_generate_Token_securre
 
     function friendlyURL($url) {
         $link = "";

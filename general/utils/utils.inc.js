@@ -28,7 +28,7 @@ function get_token(){
 function check_logued(){
     token = localStorage.getItem('token');
     if (token == null) {
-        window.location.href = 'index.php?page=login';
+        window.location.href = '/login';
     }else{
         return true;
     }
@@ -47,5 +47,31 @@ function check_validtoken(check_validtoken,token){
 function logout() {
     localStorage.removeItem('token');
 }
+
+function friendlyURL(url) {
+    return new Promise(function(resolve, reject) {
+        //////
+        $.ajax({
+            url: 'http://' + window.location.hostname + '/paths.php?op=get',
+            type: 'POST',
+            dataType: 'JSON'
+        }).done(function(data) {
+            let link = "";
+            if (data === true) {
+                url = url.replace("?", "");
+                url = url.split("&");
+                for (let i = 0; i < url.length; i++) {
+                    let aux = url[i].split("=");
+                    link +=  "/" + aux[1];
+                }// end_for
+            }else {
+                link = '/' + url;
+            }// end_else
+            resolve ("http://" + window.location.hostname + link);
+        }).fail(function(error) {
+            reject (error);
+        });
+    }); 
+}// end_friendlyURL
 
 

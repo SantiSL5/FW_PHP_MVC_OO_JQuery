@@ -1,30 +1,32 @@
 function autoComplete() {
     $('#searchAutocomplete').fadeOut(0);
     $("#input_search").on('click keyup', function() {
-
-        $.ajax({
-            url: '/module/menu/controller/controller_menu.php?op=autoComplete',
-            type: 'POST',
-            data: {'nombre':$(this).val()},
-            dataType: 'JSON'
-        }).done(function(data) {
-            $('#searchAutocomplete').empty();
-            $('#searchAutocomplete').fadeIn(1000);
-            for (row in data) {
-                $('<div></div>').appendTo('#searchAutocomplete').html(data[row]['nombre']).attr({'class': 'searchElement', 'id': data[row]['nombre']});
-            }
-           
-            $(document).on('click', '.searchElement', function() {
-                $('#input_search').val(this.getAttribute('id'));
+        friendlyURL('?page=menu&op=autoComplete').then(function(url) {
+            $.ajax({
+                url: url,
+                type: 'POST',
+                data: {'nombre':$("#input_search").val()},
+                dataType: 'JSON'
+            }).done(function(data) {
+                console.log(data);
+                $('#searchAutocomplete').empty();
+                $('#searchAutocomplete').fadeIn(1000);
+                for (row in data) {
+                    $('<div></div>').appendTo('#searchAutocomplete').html(data[row]['nombre']).attr({'class': 'searchElement', 'id': data[row]['nombre']});
+                }
+               
+                $(document).on('click', '.searchElement', function() {
+                    $('#input_search').val(this.getAttribute('id'));
+                    $('#searchAutocomplete').fadeOut(500);
+                });
+                $(document).on('click scroll', function(event) {
+                    if (event.target.id !== 'input_search') {
+                        $('#searchAutocomplete').fadeOut(500);
+                    }
+                });
+            }).fail(function() {
                 $('#searchAutocomplete').fadeOut(500);
             });
-            $(document).on('click scroll', function(event) {
-                if (event.target.id !== 'input_search') {
-                    $('#searchAutocomplete').fadeOut(500);
-                }
-            });
-        }).fail(function() {
-            $('#searchAutocomplete').fadeOut(500);
         });
     });
 }
@@ -46,7 +48,7 @@ function menu_login() {
             menu_cart();
         }).catch(function(jqXHR) {
             console.log(jqXHR);
-            // window.location.href = 'index.php?page=error503';
+            // window.location.href = 'index.php?page=503';
         }); 
 
     }
@@ -62,7 +64,7 @@ function menu_cart() {
             cart_click();
         }).catch(function(jqXHR) {
             console.log(jqXHR);
-            // window.location.href = 'index.php?page=error503';
+            // window.location.href = 'index.php?page=503';
         }); 
 
     }
@@ -76,7 +78,7 @@ function refresh_numproducts_cart() {
             $('#cart_menu_quant').text(data['num_products']);
         }).catch(function(jqXHR) {
             console.log(jqXHR);
-            // window.location.href = 'index.php?page=error503';
+            // window.location.href = 'index.php?page=503';
         }); 
 
     }

@@ -5,6 +5,10 @@
         <uri>contact</uri>
     </module>
     <module>
+        <name>menu</name>
+        <uri>menu</uri>
+    </module>
+    <module>
         <name>home</name>
         <uri>home</uri>
     </module>

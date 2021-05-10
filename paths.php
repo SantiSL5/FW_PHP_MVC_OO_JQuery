@@ -1,7 +1,8 @@
 <?php 
 
-define ('SITE_ROOT', $_SERVER['DOCUMENT_ROOT'] . '/');
-define ('SITE_PATH', 'http://' . $_SERVER['HTTP_HOST'] . '/');
+// define ('PROJECT', '/arcadestore/'); // Project Path
+define ('SITE_ROOT', $_SERVER['DOCUMENT_ROOT'] . '/'); // Site Root
+define ('SITE_PATH', 'http://' . $_SERVER['HTTP_HOST'] . '/'); // Site Path
 define ('MODEL_PATH', SITE_ROOT . 'model/');
 define ('MODULES_PATH', SITE_ROOT . 'module/');
 define ('UTILS_PATH', SITE_ROOT . 'utils/');
@@ -18,6 +19,9 @@ define ('VIEW_PATH_HOME', SITE_ROOT . 'module/home/view/');
 
 define ('MODEL_PATH_SHOP', SITE_ROOT . 'module/shop/model/model/');
 define ('VIEW_PATH_SHOP', SITE_ROOT . 'module/shop/view/');
+
+define ('MODEL_PATH_CONTACT', SITE_ROOT . 'module/contact/model/model/');
+define ('VIEW_PATH_CONTACT', SITE_ROOT . 'module/contact/view/');
 
 
 define('URL_FRIENDLY', TRUE);

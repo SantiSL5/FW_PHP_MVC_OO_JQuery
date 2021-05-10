@@ -30,7 +30,7 @@ function showCart() {
         
     }).catch(function(textStatus) {
         console.log(textStatus);
-        // window.location.href = 'index.php?page=error503';
+        // window.location.href = 'index.php?page=503';
     }); 
 }
 
@@ -40,7 +40,7 @@ function get_total() {
             $('#total_number').text('Total: '+data['total_cart'] + '€');
         }).catch(function(textStatus) {
             console.log(textStatus);
-            // window.location.href = 'index.php?page=error503';
+            // window.location.href = 'index.php?page=503';
         }); 
     }
 }
@@ -58,7 +58,7 @@ function buttonsCart() {
                     console.log(data['result']==1);
                     $('#quant-'+videogameid).text(data['quant']);
                 }else if (data['result']==0){
-                    alert('No puedes comprar mas del stock máximo');
+                    toastr.error("No puedes comprar mas del stock máximo");
                 }else if (data['result']==null){
                     location.reload();
                 }

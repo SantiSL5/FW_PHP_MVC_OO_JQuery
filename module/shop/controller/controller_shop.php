@@ -1,25 +1,50 @@
 <?php
-    $path = $_SERVER['DOCUMENT_ROOT'];
-    include ($path . "/module/shop/model/DAOShop.php");
 
-    switch($_GET['op']){
-        case 'listall';
-            try{
-                $daoshop = new DAOShop();
-            	$rdo = $daoshop->read_all_videogames();
-            }catch (Exception $e){
-                $callback = 'index.php?page=503';
-			    die('<script>window.location.href="'.$callback .'";</script>');
-            }
-            
-            if(!$rdo){
-                echo json_encode("error");
-                exit;
-            }else{
-                echo json_encode($rdo);
-                exit;
-            }
-            break;
+class controller_home {
+    function list() {
+        common::loadView('top_page_home.php', VIEW_PATH_HOME . 'home.html');
+    }
+    
+    function listall() {
+            $daoshop = new DAOShop();
+            $json = common::loadModel(MODEL_PATH_HOME, "home_model", "read_all_videogames", $con);
+            $rdo = $daoshop->read_all_videogames_BLL();
+            echo json_encode($rdo);
+    }
+    
+    function details() {
+            $json = common::loadModel(MODEL_PATH_HOME, "home_model", "read_details",$con);
+            echo json_encode($rdo);
+    }
+
+    function plataforms() {
+        $json = common::loadModel(MODEL_PATH_HOME, "home_model", "plataforms", $con);
+        echo json_encode($rdo);
+    }
+
+    function categories() {
+        $json = common::loadModel(MODEL_PATH_HOME, "home_model", "read_details", $con);
+        echo json_encode($rdo);
+    }
+
+    function rangeslider() {
+        $json = common::loadModel(MODEL_PATH_HOME, "home_model", "read_details", $con);
+        echo json_encode($rdo);
+    }
+
+    function showlike() {
+        $json = common::loadModel(MODEL_PATH_HOME, "home_model", "read_details", $con);
+        $rdo = $daoshop->read_details($_GET['id']);
+        echo json_encode($rdo);
+    }
+
+    function like() {
+        $json = common::loadModel(MODEL_PATH_HOME, "home_model", "read_details", $con);
+        $rdo = $daoshop->read_details($_GET['id']);
+        echo json_encode($rdo);
+    }
+
+}
         case 'details';
             try{
                 $daoshop = new DAOShop();
@@ -157,6 +182,6 @@
         //     }
         //     break;
         default;
-            include("view/inc/error404.php");
+            include("view/inc/404.html");
             break;
     }

@@ -1,12 +1,6 @@
 <?php
-    $path = $_SERVER['DOCUMENT_ROOT'];
-    include($path . "/model/connect.php");
-    include($path . "/general/middleware/middleware.auth.php");
-    require_once $path."/general/classes/JWT.php";
-    $databaseConfig = include ($path . "/credentials/credentials.php");
-
     class DAOShop{
-        function read_all_videogames(){
+        function read_all_videogames($con){
             $minrange=$_POST['minrange'];
             $maxrange=$_POST['maxrange'];
             $plataform=$_POST['plataform'];

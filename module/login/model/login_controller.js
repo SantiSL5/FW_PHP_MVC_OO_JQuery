@@ -21,7 +21,7 @@ function login() {
                 }
             }
         }).catch(function() {
-            window.location.href = 'index.php?page=error503';
+            window.location.href = 'index.php?page=503';
         }); 
     });
 }

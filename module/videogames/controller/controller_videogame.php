@@ -156,6 +156,6 @@
             }
             break;
         default;
-            include("view/inc/error404.php");
+            include("view/inc/404.html");
             break;
     }

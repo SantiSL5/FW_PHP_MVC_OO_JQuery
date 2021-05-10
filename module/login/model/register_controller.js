@@ -6,7 +6,6 @@ function validate_register() {
         $('#error-user-register').text('Introduce un usuario');
         validate=false;
     }else if ($('#user-register').val().length <= 3) {
-        alert($('#user-register').val().length);
         $('#error-user-register').text('El usuario tiene que tener 3 o más carácteres');
         validate=false;
     }else {
@@ -65,7 +64,7 @@ function register() {
                     }
                 }
             }).catch(function() {
-                window.location.href = 'index.php?page=error503';
+                window.location.href = 'index.php?page=503';
             }); 
         }
     });

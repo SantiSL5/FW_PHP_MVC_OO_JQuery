@@ -343,9 +343,10 @@ function cartbtnShop() {
             ajaxPromise('module/cart/controller/controller_cart.php?op=addQuant', 'POST', 'JSON',{'token':token,'idproduct':videogameid}).then(function(data){
                 check_validtoken(data['invalid_token'],data['token']);
                 if (data['result']==1) {
+                    toastr.info("Producto añadido al carrito");
                     refresh_numproducts_cart();
                 }else if (data['result']==0){
-                    alert('No puedes comprar mas del stock máximo');
+                    toastr.error("No puedes comprar mas del stock máximo");
                 }else if (data['result']==null){
                     location.reload();
                 }
@@ -405,7 +406,7 @@ function showDetails() {
         
     }).catch(function(textStatus) {
         console.log(textStatus);
-        // window.location.href = 'index.php?page=error503';
+        // window.location.href = 'index.php?page=503';
     }); 
 }
 

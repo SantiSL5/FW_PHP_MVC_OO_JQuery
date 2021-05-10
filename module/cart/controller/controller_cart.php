@@ -9,7 +9,7 @@ switch($_GET['op']){
             $daocart = new DAOCart();
             $rdo = $daocart->listCart();
         }catch (Exception $e){
-            $callback = 'index.php?page=503';
+            $callback = '/503';
             die('<script>window.location.href="'.$callback .'";</script>');
         }
         
@@ -124,7 +124,7 @@ switch($_GET['op']){
         }
         break;
     default;
-        include("view/inc/error404.php");
+        include("view/inc/404.html");
         break;
     
 }

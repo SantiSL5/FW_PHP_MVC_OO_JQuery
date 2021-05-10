@@ -15,8 +15,8 @@ class menu_model {
         return self::$_instance;
     }
 
-    public function load_search($con) {
-        return $this->bll->load_search_BLL($con);
+    public function load_search() {
+        return $this->bll->load_search_BLL();
     }
 }
 
