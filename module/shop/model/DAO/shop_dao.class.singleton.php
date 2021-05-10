@@ -1,6 +1,18 @@
 <?php
-    class DAOShop{
-        function read_all_videogames($con){
+    class shop_dao {
+        static $_instance;
+
+        private function __construct() {
+        }
+
+        public static function getInstance() {
+            if(!(self::$_instance instanceof self)){
+                self::$_instance = new self();
+            }
+            return self::$_instance;
+        }
+
+        function listall(){
             $minrange=$_POST['minrange'];
             $maxrange=$_POST['maxrange'];
             $plataform=$_POST['plataform'];
@@ -29,7 +41,8 @@
             }
         }
 
-        function read_details($videogame){
+        function details(){
+            $videogame=$_GET['id'];
             $sql = "SELECT * FROM videogames WHERE id='$videogame'";
             $sql2 ="UPDATE videogames SET views=views+1 WHERE id='$videogame'";
             $conexion = connect::con();
@@ -42,8 +55,9 @@
             return $resArray;
         }
 
-        function rangeslider(){
-            $sql = "SELECT MAX(precio) maxim, MIN(precio) minim FROM videogames;";
+        function plataforms(){
+            $sql = "SELECT * FROM plataform";
+            
             $conexion = connect::con();
             $res = mysqli_query($conexion, $sql);
             connect::close($conexion);
@@ -53,7 +67,7 @@
             return $resArray;
         }
 
-        function select_all_categories(){
+        function categories(){
             $sql = "SELECT * FROM category";
             
             $conexion = connect::con();
@@ -64,10 +78,9 @@
             }
             return $resArray;
         }
-        
-        function select_all_plataforms(){
-            $sql = "SELECT * FROM plataform";
-            
+
+        function rangeslider(){
+            $sql = "SELECT MAX(precio) maxim, MIN(precio) minim FROM videogames;";
             $conexion = connect::con();
             $res = mysqli_query($conexion, $sql);
             connect::close($conexion);

@@ -27,7 +27,7 @@ class router {
             if($_GET['op']===''){
                 $this -> uriFunction = 'list';
             } else {
-                $this -> uriFunction = ($_GET['op']);
+                $this -> uriFunction=($_GET['op']);
             }
         } else {
             $this -> uriFunction = 'list';
@@ -39,6 +39,7 @@ class router {
 
     function routingStart() {
         try {
+            // var_dump($this -> loadFunction());
             call_user_func(array($this -> loadModule(), $this -> loadFunction()));
         }catch(Exception $e) {
             // common::loadError();
@@ -54,7 +55,9 @@ class router {
                     if (file_exists($path)) {
                         require_once($path);
                         $controllerName = 'controller_' . (String) $row -> name;
+                        // var_dump($path."aaaa".$controllerName);
                         $this -> nameModule = (String) $row -> name;
+                        // var_dump($controllerName);
                         return new $controllerName;
                     }// end_if
                 }// end_if
@@ -66,10 +69,11 @@ class router {
     private function loadFunction() {
         $path = MODULES_PATH . $this -> nameModule . '/resources/functions.xml';
         if (file_exists($path)) {
+            // var_dump($this -> uriFunction);
             $functions = simplexml_load_file($path);
             foreach ($functions as $row) {
                 if (in_array($this -> uriFunction, (Array) $row -> uri)) {
-                    return (String) $row -> name;
+                    return $this -> uriFunction;
                 }// end_if
             }// end_foreach
         }

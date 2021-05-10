@@ -9,24 +9,27 @@ function set_api() {
 }
 
 function rangeSlider() {
-    ajaxPromise('module/shop/controller/controller_shop.php?op=rangeslider','POST','JSON').then(function(datarange){
-        localStorage.setItem('minrange', Number(datarange[0]['minim']));
-        localStorage.setItem('maxrange', Number(datarange[0]['maxim']));
-        $( "#slider-range" ).slider({
-            range: true,
-            min: Number(datarange[0]['minim']),
-            max: Number(datarange[0]['maxim']),
-            values: [ datarange[0]['minim'], datarange[0]['maxim'] ],
-            slide: function( event, ui ) {
-              $( "#amount" ).val(ui.values[ 0 ] + "€ - " + ui.values[ 1 ] + "€" );
-              minrange=ui.values[0];
-              maxrange=ui.values[1];
-            }
-        });
-        $( "#amount" ).val($( "#slider-range" ).slider( "values", 0 ) + "€ - " + $( "#slider-range" ).slider( "values", 1 ) + "€");
-        listallproducts(1);
-    }).catch(function(textStatus){
+    friendlyURL('?page=shop&op=rangeslider').then(function(url) {
+        console.log(url);
+        ajaxPromise(url,'POST','JSON').then(function(datarange){
+            localStorage.setItem('minrange', Number(datarange[0]['minim']));
+            localStorage.setItem('maxrange', Number(datarange[0]['maxim']));
+            $( "#slider-range" ).slider({
+                range: true,
+                min: Number(datarange[0]['minim']),
+                max: Number(datarange[0]['maxim']),
+                values: [ datarange[0]['minim'], datarange[0]['maxim'] ],
+                slide: function( event, ui ) {
+                $( "#amount" ).val(ui.values[ 0 ] + "€ - " + ui.values[ 1 ] + "€" );
+                minrange=ui.values[0];
+                maxrange=ui.values[1];
+                }
+            });
+            $( "#amount" ).val($( "#slider-range" ).slider( "values", 0 ) + "€ - " + $( "#slider-range" ).slider( "values", 1 ) + "€");
+            listallproducts(1);
+        }).catch(function(textStatus){
             console.log(textStatus);
+        });
     });
 }
 
@@ -40,12 +43,15 @@ function loadPagelist() {
 
     $('<select></select>').attr({'id':'plataforms','name':'plataforms'}).appendTo('#filters');
     $('<option></option>').attr({'value':''}).text('--Select a plataform--').appendTo('#plataforms');
-    ajaxPromise('module/shop/controller/controller_shop.php?op=plataforms','GET','JSON').then(function(data){
-        for (let i = 0; i < data.length; i++) {
-            $('<option></option>').attr({'value':data[i]['plataforma']}).text(data[i]['plataforma']).appendTo('#plataforms');
-        }
-    }).catch(function(textStatus){
-        console.log(textStatus);
+
+    friendlyURL('?page=shop&op=plataforms').then(function(url) {
+        ajaxPromise(url,'GET','JSON').then(function(data){
+            for (let i = 0; i < data.length; i++) {
+                $('<option></option>').attr({'value':data[i]['plataforma']}).text(data[i]['plataforma']).appendTo('#plataforms');
+            }
+        }).catch(function(textStatus){
+            console.log(textStatus);
+        });
     });
     $('<select></select>').attr({'id':'age','name':'age'}).appendTo('#filters');
     $('<option></option>').attr({'value':''}).text('--Select a age--').appendTo('#age');
@@ -56,12 +62,14 @@ function loadPagelist() {
     $('<option></option>').attr({'value':'18'}).text('18').appendTo('#age');
     $('<select></select>').attr({'id':'genero','name':'genero'}).appendTo('#filters');
     $('<option></option>').attr({'value':''}).text('--Select a genre--').appendTo('#genero');
-    ajaxPromise('module/shop/controller/controller_shop.php?op=categories','GET','JSON').then(function(data){
-        for (let i = 0; i < data.length; i++) {
-            $('<option></option>').attr({'value':data[i]['category_name']}).text(data[i]['category_name']).appendTo('#genero');
-        }
-    }).catch(function(textStatus){
-        console.log(textStatus);
+    friendlyURL('?page=shop&op=categories').then(function(url) {
+        ajaxPromise(url,'GET','JSON').then(function(data){
+            for (let i = 0; i < data.length; i++) {
+                $('<option></option>').attr({'value':data[i]['category_name']}).text(data[i]['category_name']).appendTo('#genero');
+            }
+        }).catch(function(textStatus){
+            console.log(textStatus);
+        });
     });
     $('<div></div>').attr({'id':'filters_buttons'}).appendTo('#filters_form');
     $('<button></button>').attr({'id':'applyfilters','name':'Filter','type':'button'}).text('Filter').appendTo('#filters_buttons');
@@ -95,20 +103,22 @@ function printProducts(numberofpages,limit,offset,data) {
                     $('<img></img>').attr({'src':'/module/shop/view/img/eye.png','class':'eye'}).appendTo('#'+data[i].id+' .divbutton');
                     $('<span></span>').attr({'class':'price'}).text(data[i].precio+'€').appendTo('#'+data[i].id+' .divbutton');
                 }else{
-                    ajaxPromise('module/shop/controller/controller_shop.php?op=showlike', 'POST', 'JSON',{'token':token,'idproduct':data[i].id}).then(function(datalike){
-                        check_validtoken(datalike['invalid_token'],datalike['token']);
-                        if (datalike['like'] == true) {
-                            $('<img></img>').attr({'src':'/module/shop/view/img/heart_like.png','id':data[i].id,'class':'like'}).appendTo('#'+data[i].id+' .divbutton');
-                        }else{
-                            $('<img></img>').attr({'src':'/module/shop/view/img/heart.png','id':data[i].id,'class':'not_like'}).appendTo('#'+data[i].id+' .divbutton');
-                        }
-                        $('<span></span>').attr({'class':'views'}).text(data[i].views).appendTo('#'+data[i].id+' .divbutton');
-                        $('<img></img>').attr({'src':'/module/shop/view/img/eye.png','class':'eye'}).appendTo('#'+data[i].id+' .divbutton');
-                        $('<span></span>').attr({'class':'price'}).text(data[i].precio+'€').appendTo('#'+data[i].id+' .divbutton');
-                        $('<button></button>').attr({'id':data[i].id,'class':'showdetails'}).text('Show details').appendTo('#'+data[i].id+' .divbutton');
-                        $('<img></img>').attr({'id':'cart-'+data[i].id,'src':'module/menu/view/img/cart.png','style':'height: 30px;','class':'cartbtn_shop'}).appendTo('#'+data[i].id+' .divbutton');
-                    }).catch(function(textStatus){
-                        console.log(textStatus);
+                    friendlyURL('?page=shop&op=showlike').then(function(url) {
+                        ajaxPromise(url, 'POST', 'JSON',{'token':token,'idproduct':data[i].id}).then(function(datalike){
+                            check_validtoken(datalike['invalid_token'],datalike['token']);
+                            if (datalike['like'] == true) {
+                                $('<img></img>').attr({'src':'/module/shop/view/img/heart_like.png','id':data[i].id,'class':'like'}).appendTo('#'+data[i].id+' .divbutton');
+                            }else{
+                                $('<img></img>').attr({'src':'/module/shop/view/img/heart.png','id':data[i].id,'class':'not_like'}).appendTo('#'+data[i].id+' .divbutton');
+                            }
+                            $('<span></span>').attr({'class':'views'}).text(data[i].views).appendTo('#'+data[i].id+' .divbutton');
+                            $('<img></img>').attr({'src':'/module/shop/view/img/eye.png','class':'eye'}).appendTo('#'+data[i].id+' .divbutton');
+                            $('<span></span>').attr({'class':'price'}).text(data[i].precio+'€').appendTo('#'+data[i].id+' .divbutton');
+                            $('<button></button>').attr({'id':data[i].id,'class':'showdetails'}).text('Show details').appendTo('#'+data[i].id+' .divbutton');
+                            $('<img></img>').attr({'id':'cart-'+data[i].id,'src':'module/menu/view/img/cart.png','style':'height: 30px;','class':'cartbtn_shop'}).appendTo('#'+data[i].id+' .divbutton');
+                        }).catch(function(textStatus){
+                            console.log(textStatus);
+                        });
                     });
                 }
             }
@@ -131,20 +141,22 @@ function printProducts(numberofpages,limit,offset,data) {
                     $('<img></img>').attr({'src':'/module/shop/view/img/eye.png','class':'eye'}).appendTo('#'+data[i].id+' .divbutton');
                     $('<span></span>').attr({'class':'price'}).text(data[i].precio+'€').appendTo('#'+data[i].id+' .divbutton');
                 }else{
-                    ajaxPromise('module/shop/controller/controller_shop.php?op=showlike', 'POST', 'JSON',{'token':token,'idproduct':data[i].id}).then(function(datalike){
-                        check_validtoken(datalike['invalid_token'],datalike['token']);
-                        if (datalike['like'] == true) {
-                            $('<img></img>').attr({'src':'/module/shop/view/img/heart_like.png','id':data[i].id,'class':'like'}).appendTo('#'+data[i].id+' .divbutton');
-                        }else{
-                            $('<img></img>').attr({'src':'/module/shop/view/img/heart.png','id':data[i].id,'class':'not_like'}).appendTo('#'+data[i].id+' .divbutton');
-                        }
-                        $('<span></span>').attr({'class':'views'}).text(data[i].views).appendTo('#'+data[i].id+' .divbutton');
-                        $('<img></img>').attr({'src':'/module/shop/view/img/eye.png','class':'eye'}).appendTo('#'+data[i].id+' .divbutton');
-                        $('<span></span>').attr({'class':'price'}).text(data[i].precio+'€').appendTo('#'+data[i].id+' .divbutton');
-                        $('<button></button>').attr({'id':data[i].id,'class':'showdetails'}).text('Show details').appendTo('#'+data[i].id+' .divbutton');
-                        $('<img></img>').attr({'id':'cart-'+data[i].id,'src':'module/menu/view/img/cart.png','style':'height: 30px;','class':'cartbtn_shop'}).appendTo('#'+data[i].id+' .divbutton');
-                    }).catch(function(textStatus){
-                        console.log(textStatus);
+                    friendlyURL('?page=shop&op=showlike').then(function(url) {
+                        ajaxPromise(url, 'POST', 'JSON',{'token':token,'idproduct':data[i].id}).then(function(datalike){
+                            check_validtoken(datalike['invalid_token'],datalike['token']);
+                            if (datalike['like'] == true) {
+                                $('<img></img>').attr({'src':'/module/shop/view/img/heart_like.png','id':data[i].id,'class':'like'}).appendTo('#'+data[i].id+' .divbutton');
+                            }else{
+                                $('<img></img>').attr({'src':'/module/shop/view/img/heart.png','id':data[i].id,'class':'not_like'}).appendTo('#'+data[i].id+' .divbutton');
+                            }
+                            $('<span></span>').attr({'class':'views'}).text(data[i].views).appendTo('#'+data[i].id+' .divbutton');
+                            $('<img></img>').attr({'src':'/module/shop/view/img/eye.png','class':'eye'}).appendTo('#'+data[i].id+' .divbutton');
+                            $('<span></span>').attr({'class':'price'}).text(data[i].precio+'€').appendTo('#'+data[i].id+' .divbutton');
+                            $('<button></button>').attr({'id':data[i].id,'class':'showdetails'}).text('Show details').appendTo('#'+data[i].id+' .divbutton');
+                            $('<img></img>').attr({'id':'cart-'+data[i].id,'src':'module/menu/view/img/cart.png','style':'height: 30px;','class':'cartbtn_shop'}).appendTo('#'+data[i].id+' .divbutton');
+                        }).catch(function(textStatus){
+                            console.log(textStatus);
+                        });
                     });
                 }
             }
@@ -206,41 +218,42 @@ function listallproducts(offset) {
     // console.log("p "+localStorage.getItem('plataform'));
     // console.log("a"+localStorage.getItem('age'));
     // console.log("g "+sessionStorage.getItem('genero'));
+    friendlyURL('?page=shop&op=listall').then(function(url) {
+        ajaxPromise(url,'POST','JSON',{minrange:localStorage.getItem('minrange'),maxrange:localStorage.getItem('maxrange'),plataform:localStorage.getItem('plataform'),age:localStorage.getItem('age'),genero:localStorage.getItem('genero'),search:localStorage.getItem('search')}).then(function(data){
+            limit=8;
+            numberofpages=Math.ceil((data.length-1) / 8);
 
-    ajaxPromise('module/shop/controller/controller_shop.php?op=listall','POST','JSON',{minrange:localStorage.getItem('minrange'),maxrange:localStorage.getItem('maxrange'),plataform:localStorage.getItem('plataform'),age:localStorage.getItem('age'),genero:localStorage.getItem('genero'),search:localStorage.getItem('search')}).then(function(data){
-        limit=8;
-        numberofpages=Math.ceil((data.length-1) / 8);
+            $(document).on("click", "#pag-back" ,function(){
+                if (offset!=1) {
+                    offset--;
+                    $('#container-products').empty();
+                    loadPagination(numberofpages,limit,offset,data);
+                    printProducts(numberofpages,limit,offset,data);
+                }
+            });
 
-        $(document).on("click", "#pag-back" ,function(){
-            if (offset!=1) {
-                offset--;
-                $('#container-products').empty();
-                loadPagination(numberofpages,limit,offset,data);
-                printProducts(numberofpages,limit,offset,data);
-            }
+            $(document).on("click", "#pag-next" ,function(){
+                if (offset!=numberofpages) {
+                    offset++;
+                    $('#container-products').empty();
+                    loadPagination(numberofpages,limit,offset,data);
+                    printProducts(numberofpages,limit,offset,data);
+                }
+            });
+
+            $(document).on("click", ".page" ,function(){
+                if (offset!=numberofpages) {
+                    $('#container-products').empty();
+                    offset=Number(this.getAttribute("data"));
+                    loadPagination(numberofpages,limit,offset,data);
+                    printProducts(numberofpages,limit,offset,data);
+                }
+            });
+            loadPagination(numberofpages,limit,offset,data);
+            printProducts(numberofpages,limit,offset,data);
+        }).catch(function(textStatus){
+                console.log(textStatus);
         });
-
-        $(document).on("click", "#pag-next" ,function(){
-            if (offset!=numberofpages) {
-                offset++;
-                $('#container-products').empty();
-                loadPagination(numberofpages,limit,offset,data);
-                printProducts(numberofpages,limit,offset,data);
-            }
-        });
-
-        $(document).on("click", ".page" ,function(){
-            if (offset!=numberofpages) {
-                $('#container-products').empty();
-                offset=Number(this.getAttribute("data"));
-                loadPagination(numberofpages,limit,offset,data);
-                printProducts(numberofpages,limit,offset,data);
-            }
-        });
-        loadPagination(numberofpages,limit,offset,data);
-        printProducts(numberofpages,limit,offset,data);
-    }).catch(function(textStatus){
-            console.log(textStatus);
     });
 };
 
@@ -248,10 +261,12 @@ function like() {
     $(document).on("click", ".like" ,function(){
         videogameid = $(this).attr('id');
         if (check_logued() == true) {
-            ajaxPromise('module/shop/controller/controller_shop.php?op=like', 'POST', 'JSON',{'token':token,'idproduct':videogameid}).then(function(datalike){
-                check_validtoken(datalike['invalid_token'],datalike['token']);
-            }).catch(function(textStatus){
-                console.log(textStatus);
+            friendlyURL('?page=shop&op=like').then(function(url) {
+                ajaxPromise(url, 'POST', 'JSON',{'token':token,'idproduct':videogameid}).then(function(datalike){
+                    check_validtoken(datalike['invalid_token'],datalike['token']);
+                }).catch(function(textStatus){
+                    console.log(textStatus);
+                });
             });
             $(this).attr({'src':'/module/shop/view/img/heart.png','class':'not_like'});
             likes=parseInt($("#likes"+videogameid).text());
@@ -264,10 +279,12 @@ function like() {
         if (token===null) {
             window.location.href = 'index.php?page=login';
         }else{
-            ajaxPromise('module/shop/controller/controller_shop.php?op=like', 'POST', 'JSON',{'token':token,'idproduct':videogameid}).then(function(datalike){
-                check_validtoken(datalike['invalid_token'],datalike['token']);
-            }).catch(function(textStatus){
-                console.log(textStatus);
+            friendlyURL('?page=shop&op=like').then(function(url) {
+                ajaxPromise(url, 'POST', 'JSON',{'token':token,'idproduct':videogameid}).then(function(datalike){
+                    check_validtoken(datalike['invalid_token'],datalike['token']);
+                }).catch(function(textStatus){
+                    console.log(textStatus);
+                });
             });
             $(this).attr({'src':'/module/shop/view/img/heart_like.png','class':'like'});
             likes=parseInt($("#likes"+videogameid).text());
@@ -340,18 +357,20 @@ function cartbtnShop() {
         if (token===null) {
             window.location.href = 'index.php?page=login';
         }else{
-            ajaxPromise('module/cart/controller/controller_cart.php?op=addQuant', 'POST', 'JSON',{'token':token,'idproduct':videogameid}).then(function(data){
-                check_validtoken(data['invalid_token'],data['token']);
-                if (data['result']==1) {
-                    toastr.info("Producto añadido al carrito");
-                    refresh_numproducts_cart();
-                }else if (data['result']==0){
-                    toastr.error("No puedes comprar mas del stock máximo");
-                }else if (data['result']==null){
-                    location.reload();
-                }
-            }).catch(function(textStatus){
-                console.log(textStatus);
+            friendlyURL('?page=cart&op=addQuant').then(function(url) {
+                ajaxPromise(url, 'POST', 'JSON',{'token':token,'idproduct':videogameid}).then(function(data){
+                    check_validtoken(data['invalid_token'],data['token']);
+                    if (data['result']==1) {
+                        toastr.info("Producto añadido al carrito");
+                        refresh_numproducts_cart();
+                    }else if (data['result']==0){
+                        toastr.error("No puedes comprar mas del stock máximo");
+                    }else if (data['result']==null){
+                        location.reload();
+                    }
+                }).catch(function(textStatus){
+                    console.log(textStatus);
+                });
             });
         }
     });
@@ -359,55 +378,59 @@ function cartbtnShop() {
  
 
 function showDetails() {
-    ajaxPromise('module/shop/controller/controller_shop.php?op=details&id=' + sessionStorage.getItem('id'), 'GET', 'JSON').then(function(data) {
-        token=get_token();
-        $('#shop').empty();
-        $('<div></div>').attr({'id':'details'}).appendTo('#shop');
-        $('<h1></h1>').text(data[0].nombre).appendTo('#details');
-        $('<img></img>').attr({'src':data[0].img}).appendTo('#details');
-        $('<div></div>').attr({'class':'infodivdetails'}).appendTo('#details');
-        $('<ul></ul>').attr({'class':'infodivdetails'}).appendTo('#details .infodivdetails');
-        $('<h2></h2>').text('State: '+data[0].estado).appendTo('#details .infodivdetails ul');
-        $('<h2></h2>').text('Company: '+data[0].companyia).appendTo('#details .infodivdetails ul');
-        $('<h2></h2>').text('Plataforma: '+data[0].plataforma).appendTo('#details .infodivdetails ul');
-        $('<h2></h2>').text('Clasification: '+data[0].clasificacion).appendTo('#details .infodivdetails ul');
-        $('<h2></h2>').text('Clasification: '+data[0].precio).appendTo('#details .infodivdetails ul');
-        $('<h2></h2>').attr({'id':"likes"+data[0].id,'class':'likes'}).text(data[0].likes).appendTo('#details .infodivdetails ul');
-        if (token === null) {
-            $('<img></img>').attr({'src':'/module/shop/view/img/heart.png','id':data[0].id,'class':'not_like'}).text(data[0].views).appendTo('#details .infodivdetails ul');
-            $('<span></span>').attr({'id':'spanviews'}).appendTo('#details .infodivdetails ul');
-            $('<h2></h2>').attr({'class':'views'}).text(data[0].views).appendTo('#spanviews');
-            $('<img></img>').attr({'src':'/module/shop/view/img/eye.png','class':'eye'}).appendTo('#spanviews');
-            $('<h2></h2>').attr({'class':'price'}).text(data[0].precio+'€').appendTo('#details .infodivdetails ul');
-            set_api();
-            $('<button></button>').attr({'class':'cleandetails'}).text('Return').appendTo('#details');
-        }else{
-            ajaxPromise('module/shop/controller/controller_shop.php?op=showlike', 'POST', 'JSON',{'token':token,'idproduct':data[0].id}).then(function(datalike){
-                check_validtoken(datalike['invalid_token'],datalike['token']);
-                if (datalike['like']) {
-                    $('<img></img>').attr({'src':'/module/shop/view/img/heart_like.png','id':data[0].id,'class':'like'}).text(data[0].views).appendTo('#details .infodivdetails ul');
-                }else{
-                    $('<img></img>').attr({'src':'/module/shop/view/img/heart.png','id':data[0].id,'class':'not_like'}).text(data[0].views).appendTo('#details .infodivdetails ul');
-                }
+    friendlyURL('?page=cart&op=details&id='+sessionStorage.getItem('id')).then(function(url) {
+        ajaxPromise(url, 'GET', 'JSON').then(function(data) {
+            token=get_token();
+            $('#shop').empty();
+            $('<div></div>').attr({'id':'details'}).appendTo('#shop');
+            $('<h1></h1>').text(data[0].nombre).appendTo('#details');
+            $('<img></img>').attr({'src':data[0].img}).appendTo('#details');
+            $('<div></div>').attr({'class':'infodivdetails'}).appendTo('#details');
+            $('<ul></ul>').attr({'class':'infodivdetails'}).appendTo('#details .infodivdetails');
+            $('<h2></h2>').text('State: '+data[0].estado).appendTo('#details .infodivdetails ul');
+            $('<h2></h2>').text('Company: '+data[0].companyia).appendTo('#details .infodivdetails ul');
+            $('<h2></h2>').text('Plataforma: '+data[0].plataforma).appendTo('#details .infodivdetails ul');
+            $('<h2></h2>').text('Clasification: '+data[0].clasificacion).appendTo('#details .infodivdetails ul');
+            $('<h2></h2>').text('Clasification: '+data[0].precio).appendTo('#details .infodivdetails ul');
+            $('<h2></h2>').attr({'id':"likes"+data[0].id,'class':'likes'}).text(data[0].likes).appendTo('#details .infodivdetails ul');
+            if (token === null) {
+                $('<img></img>').attr({'src':'/module/shop/view/img/heart.png','id':data[0].id,'class':'not_like'}).text(data[0].views).appendTo('#details .infodivdetails ul');
                 $('<span></span>').attr({'id':'spanviews'}).appendTo('#details .infodivdetails ul');
                 $('<h2></h2>').attr({'class':'views'}).text(data[0].views).appendTo('#spanviews');
                 $('<img></img>').attr({'src':'/module/shop/view/img/eye.png','class':'eye'}).appendTo('#spanviews');
                 $('<h2></h2>').attr({'class':'price'}).text(data[0].precio+'€').appendTo('#details .infodivdetails ul');
                 set_api();
                 $('<button></button>').attr({'class':'cleandetails'}).text('Return').appendTo('#details');
-                $('<img></img>').attr({'id':'cart-'+data[0].id,'src':'module/menu/view/img/cart.png','style':'height: 40px;','class':'cartbtn_shop'}).appendTo('#details');
-            }).catch(function(textStatus){
-                console.log(textStatus);
-            });
-        }
+            }else{
+                friendlyURL('?page=shop&op=showlike').then(function(url) {
+                    ajaxPromise('module/shop/controller/controller_shop.php?op=showlike', 'POST', 'JSON',{'token':token,'idproduct':data[0].id}).then(function(datalike){
+                        check_validtoken(datalike['invalid_token'],datalike['token']);
+                        if (datalike['like']) {
+                            $('<img></img>').attr({'src':'/module/shop/view/img/heart_like.png','id':data[0].id,'class':'like'}).text(data[0].views).appendTo('#details .infodivdetails ul');
+                        }else{
+                            $('<img></img>').attr({'src':'/module/shop/view/img/heart.png','id':data[0].id,'class':'not_like'}).text(data[0].views).appendTo('#details .infodivdetails ul');
+                        }
+                        $('<span></span>').attr({'id':'spanviews'}).appendTo('#details .infodivdetails ul');
+                        $('<h2></h2>').attr({'class':'views'}).text(data[0].views).appendTo('#spanviews');
+                        $('<img></img>').attr({'src':'/module/shop/view/img/eye.png','class':'eye'}).appendTo('#spanviews');
+                        $('<h2></h2>').attr({'class':'price'}).text(data[0].precio+'€').appendTo('#details .infodivdetails ul');
+                        set_api();
+                        $('<button></button>').attr({'class':'cleandetails'}).text('Return').appendTo('#details');
+                        $('<img></img>').attr({'id':'cart-'+data[0].id,'src':'module/menu/view/img/cart.png','style':'height: 40px;','class':'cartbtn_shop'}).appendTo('#details');
+                    }).catch(function(textStatus){
+                        console.log(textStatus);
+                    });
+                });
+            }
 
-        // $('<div><div>').attr({'class': 'top-photo'}).appendTo('.top-details');
-        // $('<div></div>').attr({'class': 'container separe-menu', 'id': 'container-shop-details'}).appendTo('.content');
-        
-    }).catch(function(textStatus) {
-        console.log(textStatus);
-        // window.location.href = 'index.php?page=503';
-    }); 
+            // $('<div><div>').attr({'class': 'top-photo'}).appendTo('.top-details');
+            // $('<div></div>').attr({'class': 'container separe-menu', 'id': 'container-shop-details'}).appendTo('.content');
+            
+        }).catch(function(textStatus) {
+            console.log(textStatus);
+            // window.location.href = 'index.php?page=503';
+        });
+    });
 }
 
 function loadContent(){
