@@ -8,7 +8,6 @@ function autoComplete() {
                 data: {'nombre':$("#input_search").val()},
                 dataType: 'JSON'
             }).done(function(data) {
-                console.log(data);
                 $('#searchAutocomplete').empty();
                 $('#searchAutocomplete').fadeIn(1000);
                 for (row in data) {
@@ -39,48 +38,51 @@ function menu_login() {
         $('<button/>').attr({'id':'registerbtn-nav','class':'btn btn-outline-success me-2'}).text('Register').appendTo('#account-navbar ul li');
         $('<button/>').attr({'id':'loginbtn-nav','class':'btn btn-outline-success me-2'}).text('Login').appendTo('#account-navbar ul li');
     } else{
-        ajaxPromise('module/login/controller/controller_login.php?op=menu_info', 'POST', 'JSON',{'token':token}).then(function(data) {
-            check_validtoken(data['invalid_token'],data['token']);
-            $('<a></a>').attr({'id':'username_menu','class':'nav-link'}).text(data['username']).appendTo('#account-navbar ul');
-            $('<img/>').attr({'id':'avatar_menu','src':data['avatar']}).appendTo('#account-navbar ul');
-            $('<button/>').attr({'id':'logoutbtn-nav','class':'btn btn-outline-success me-2'}).text('Logout').appendTo('#account-navbar ul');
-            logoutbtn_navclick();
-            menu_cart();
-        }).catch(function(jqXHR) {
-            console.log(jqXHR);
-            // window.location.href = 'index.php?page=503';
-        }); 
-
+        friendlyURL('?page=login&op=menu_info').then(function(url) {
+            ajaxPromise(url, 'POST', 'JSON',{'token':token}).then(function(data) {
+                check_validtoken(data['invalid_token'],data['token']);
+                $('<a></a>').attr({'id':'username_menu','class':'nav-link'}).text(data['username']).appendTo('#account-navbar ul');
+                $('<img/>').attr({'id':'avatar_menu','src':data['avatar']}).appendTo('#account-navbar ul');
+                $('<button/>').attr({'id':'logoutbtn-nav','class':'btn btn-outline-success me-2'}).text('Logout').appendTo('#account-navbar ul');
+                logoutbtn_navclick();
+                menu_cart();
+            }).catch(function(jqXHR) {
+                console.log(jqXHR);
+                // window.location.href = 'index.php?page=503';
+            }); 
+        });
     }
 }
 
 function menu_cart() {
     token=get_token();
     if (token != null) {
-        ajaxPromise('module/cart/controller/controller_cart.php?op=menuCart', 'POST', 'JSON',{'token':token}).then(function(data) {
-            check_validtoken(data['invalid_token'],data['token']);
-            $('<img/>').attr({'id':'cart_menu','src':'module/menu/view/img/cart.png','style':'height: 40px; background-color:white;'}).appendTo('#account-navbar ul');
-            $('<a/>').attr({'id':'cart_menu_quant','class':'nav-link'}).text(data['num_products']).appendTo('#account-navbar ul');
-            cart_click();
-        }).catch(function(jqXHR) {
-            console.log(jqXHR);
-            // window.location.href = 'index.php?page=503';
-        }); 
-
+        friendlyURL('?page=cart&op=menuCart').then(function(url) {
+            ajaxPromise(url, 'POST', 'JSON',{'token':token}).then(function(data) {
+                check_validtoken(data['invalid_token'],data['token']);
+                $('<img/>').attr({'id':'cart_menu','src':'module/menu/view/img/cart.png','style':'height: 40px; background-color:white;'}).appendTo('#account-navbar ul');
+                $('<a/>').attr({'id':'cart_menu_quant','class':'nav-link'}).text(data['num_products']).appendTo('#account-navbar ul');
+                cart_click();
+            }).catch(function(jqXHR) {
+                console.log(jqXHR);
+                // window.location.href = 'index.php?page=503';
+            });
+        });
     }
 }
 
 function refresh_numproducts_cart() {
     token=get_token();
     if (token != null) {
-        ajaxPromise('module/cart/controller/controller_cart.php?op=menuCart', 'POST', 'JSON',{'token':token}).then(function(data) {
-            check_validtoken(data['invalid_token'],data['token']);
-            $('#cart_menu_quant').text(data['num_products']);
-        }).catch(function(jqXHR) {
-            console.log(jqXHR);
-            // window.location.href = 'index.php?page=503';
+        friendlyURL('?page=cart&op=menuCart').then(function(url) {
+            ajaxPromise(url, 'POST', 'JSON',{'token':token}).then(function(data) {
+                check_validtoken(data['invalid_token'],data['token']);
+                $('#cart_menu_quant').text(data['num_products']);
+            }).catch(function(jqXHR) {
+                console.log(jqXHR);
+                // window.location.href = 'index.php?page=503';
+            }); 
         }); 
-
     }
 }
 
@@ -93,26 +95,30 @@ function buttonSearch() {
 
 function registerbtn_navclick() {
     $('#registerbtn-nav').on('click', function() {
-        window.location.href = 'index.php?page=register';
+        friendlyURL('?page=login&op=listregister').then(function(url) {
+            window.location.href = url;
+        }); 
     });
 }
 
 function loginbtn_navclick() {
     $('#loginbtn-nav').on('click', function() {
-        window.location.href = 'index.php?page=login';
+        friendlyURL('?page=login&op=list').then(function(url) {
+            window.location.href = url;
+        }); 
     });
 }
 
 function cart_click() {
     $('#cart_menu').on('click', function() {
-        window.location.href = 'index.php?page=cart';
+        window.location.href = '/cart';
     });
 }
 
 $(document).ready(function() {
     buttonSearch();
     autoComplete();
-    // menu_login();
+    menu_login();
     registerbtn_navclick();
     loginbtn_navclick();
     cart_click();

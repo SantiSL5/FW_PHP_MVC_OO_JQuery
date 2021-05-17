@@ -23,6 +23,12 @@ define ('VIEW_PATH_SHOP', SITE_ROOT . 'module/shop/view/');
 define ('MODEL_PATH_CONTACT', SITE_ROOT . 'module/contact/model/model/');
 define ('VIEW_PATH_CONTACT', SITE_ROOT . 'module/contact/view/');
 
+define ('MODEL_PATH_LOGIN', SITE_ROOT . 'module/login/model/model/');
+define ('VIEW_PATH_LOGIN', SITE_ROOT . 'module/login/view/');
+
+define ('MODEL_PATH_CART', SITE_ROOT . 'module/cart/model/model/');
+define ('VIEW_PATH_CART', SITE_ROOT . 'module/cart/view/');
+
 
 define('URL_FRIENDLY', TRUE);
 

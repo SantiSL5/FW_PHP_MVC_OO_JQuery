@@ -4,10 +4,21 @@
  * Copyright(c)2011 Miguel Angel Nubla Ruiz (miguelangel.nubla@gmail.com). All rights reserved
  */
 
-class JWT {
+class jwt {
     private $alg;
     private $hash;
     private $data;
+    static $_instance;
+
+    private function __construct() {
+    }
+
+    public static function getInstance() {
+        if(!(self::$_instance instanceof self)){
+            self::$_instance = new self();
+        }
+        return self::$_instance;
+    }
     
     private function base64url_encode($data) {
         return rtrim(strtr(base64_encode($data), '+/', '-_'), '=');

@@ -1,8 +1,10 @@
 <?php
     class shop_dao {
+        private $middleware;
         static $_instance;
 
         private function __construct() {
+            $this->$middleware = middleware::getInstance();
         }
 
         public static function getInstance() {
@@ -42,9 +44,9 @@
         }
 
         function details(){
-            $videogame=$_GET['id'];
+            $videogame=$_POST['id'];
             $sql = "SELECT * FROM videogames WHERE id='$videogame'";
-            $sql2 ="UPDATE videogames SET views=views+1 WHERE id='$videogame'";
+            $sql2 = "UPDATE videogames SET views=views+1 WHERE id='$videogame'";
             $conexion = connect::con();
             $res = mysqli_query($conexion, $sql);
             mysqli_query($conexion, $sql2);
@@ -93,7 +95,7 @@
         function showlike(){
             $token=$_POST['token'];
             $idproduct=$_POST['idproduct'];
-            $token=decode($token);
+            $token=$this->$middleware->decode($token);
             if ($token['invalid_token'] == true) {
                 $result['invalid_token']=true;
             }else{
@@ -110,7 +112,7 @@
                     $result['like']=false;
                 }
                 $result['invalid_token']=false;
-                $result['token']=encode($userid);
+                $result['token']=$this->$middleware->encode($userid);
                 connect::close($conexion);
             }
             return $result;
@@ -119,7 +121,7 @@
         function like(){
             $token=$_POST['token'];
             $idproduct=$_POST['idproduct'];
-            $token=decode($token);
+            $token=$this->$middleware->decode($token);
             if ($token['invalid_token'] == true) {
                 $result['invalid_token']=true;
             }else{
@@ -140,7 +142,7 @@
                 }
                 $res2 = mysqli_query($conexion, $sql2);
                 $result['invalid_token']=false;
-                $result['token']=encode($userid);
+                $result['token']=$this->$middleware->encode($userid);
                 connect::close($conexion);
             }
             return $result;

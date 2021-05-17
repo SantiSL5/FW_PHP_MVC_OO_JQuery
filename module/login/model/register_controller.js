@@ -45,26 +45,28 @@ function validate_register() {
 function register() {
     $('#register-btn').on('click', function() {
         if (validate_register()==true) {
-            ajaxPromise('module/login/controller/controller_login.php?op=register', 'POST', 'JSON',{'username':$('#user-register').val(),'email':$('#email-register').val(),'password':$('#password-register').val()}).then(function(data) {
-                if (data[0] == true) {
-                    alert("Registrado Correctamente");
-                    window.location.href = 'index.php?page=login'
-                }else if (data[0] == false) {
-                    if (data['username'] == false) {
-                        $('#error-user-register').text('El usuario introducido ya existe');
+            friendlyURL('?page=login&op=register').then(function(url) {
+                ajaxPromise(url, 'POST', 'JSON',{'username':$('#user-register').val(),'email':$('#email-register').val(),'password':$('#password-register').val()}).then(function(data) {
+                    if (data[0] == true) {
+                        alert("Registrado Correctamente");
+                        window.location.href = 'index.php?page=login'
+                    }else if (data[0] == false) {
+                        if (data['username'] == false) {
+                            $('#error-user-register').text('El usuario introducido ya existe');
+                        }
+                        if (data['email'] == false) {
+                            $('#error-email-register').text('El email introducido ya existe');
+                        }
+                        if (data['username'] == true) {
+                            $('#error-user-register').text('');
+                        }
+                        if (data['email'] == true) {
+                            $('#error-email-register').text('');
+                        }
                     }
-                    if (data['email'] == false) {
-                        $('#error-email-register').text('El email introducido ya existe');
-                    }
-                    if (data['username'] == true) {
-                        $('#error-user-register').text('');
-                    }
-                    if (data['email'] == true) {
-                        $('#error-email-register').text('');
-                    }
-                }
-            }).catch(function() {
-                window.location.href = 'index.php?page=503';
+                }).catch(function() {
+                    // window.location.href = '/503';
+                }); 
             }); 
         }
     });
@@ -72,7 +74,9 @@ function register() {
 
 function loginbtn_change() {
     $('#login-option').on('click', function() {
-        window.location.href = 'index.php?page=login';
+        friendlyURL('?page=login&op=list').then(function(url) {
+            window.location.href = url;
+        }); 
     });
 }
 

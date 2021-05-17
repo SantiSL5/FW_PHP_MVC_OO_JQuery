@@ -16,7 +16,6 @@ class router {
     }// end_getInstance
 
     function __construct() {
-
         if(isset($_GET['page'])) {
             $this -> uriModule = ($_GET['page']);
         } else {
@@ -33,16 +32,18 @@ class router {
             $this -> uriFunction = 'list';
         }
 
+        // var_dump($this->uriModule,$this->uriFunction);
+
         // $this -> uriModule = ($_GET['page']) ? $_GET['page'] : 'home';
         // $this -> uriFunction = ($_GET['op']) ? $_GET['op'] : 'list';
     }// end_construct
 
     function routingStart() {
         try {
-            // var_dump($this -> loadFunction());
+            // var_dump($this -> loadModule(), $this -> loadFunction());
             call_user_func(array($this -> loadModule(), $this -> loadFunction()));
         }catch(Exception $e) {
-            // common::loadError();
+            //error
         }// end_catch
     }// end_routingStart
     
@@ -77,6 +78,7 @@ class router {
                 }// end_if
             }// end_foreach
         }
+        throw new Exception('Not Function found.');
         // throw new Exception('Not Function found.');
     }// end_loadFunction
 

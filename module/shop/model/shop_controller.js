@@ -10,7 +10,6 @@ function set_api() {
 
 function rangeSlider() {
     friendlyURL('?page=shop&op=rangeslider').then(function(url) {
-        console.log(url);
         ajaxPromise(url,'POST','JSON').then(function(datarange){
             localStorage.setItem('minrange', Number(datarange[0]['minim']));
             localStorage.setItem('maxrange', Number(datarange[0]['maxim']));
@@ -378,8 +377,8 @@ function cartbtnShop() {
  
 
 function showDetails() {
-    friendlyURL('?page=cart&op=details&id='+sessionStorage.getItem('id')).then(function(url) {
-        ajaxPromise(url, 'GET', 'JSON').then(function(data) {
+    friendlyURL('?page=shop&op=details').then(function(url) {
+        ajaxPromise(url, 'POST', 'JSON',{'id':sessionStorage.getItem('id')}).then(function(data) {
             token=get_token();
             $('#shop').empty();
             $('<div></div>').attr({'id':'details'}).appendTo('#shop');
@@ -403,7 +402,7 @@ function showDetails() {
                 $('<button></button>').attr({'class':'cleandetails'}).text('Return').appendTo('#details');
             }else{
                 friendlyURL('?page=shop&op=showlike').then(function(url) {
-                    ajaxPromise('module/shop/controller/controller_shop.php?op=showlike', 'POST', 'JSON',{'token':token,'idproduct':data[0].id}).then(function(datalike){
+                    ajaxPromise(url, 'POST', 'JSON',{'token':token,'idproduct':data[0].id}).then(function(datalike){
                         check_validtoken(datalike['invalid_token'],datalike['token']);
                         if (datalike['like']) {
                             $('<img></img>').attr({'src':'/module/shop/view/img/heart_like.png','id':data[0].id,'class':'like'}).text(data[0].views).appendTo('#details .infodivdetails ul');

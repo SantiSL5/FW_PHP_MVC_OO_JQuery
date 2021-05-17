@@ -1,15 +1,23 @@
 <?php
-    $path = $_SERVER['DOCUMENT_ROOT'];
-    include($path . "/model/connect.php");
-    include($path . "/general/middleware/middleware.auth.php");
-    require_once $path."/general/classes/JWT.php";
-    $databaseConfig = include ($path . "/credentials/credentials.php");
+    class cart_dao{
 
-    class DAOCart{
+        private $middleware;
+        static $_instance;
+
+        private function __construct() {
+            $this->$middleware = middleware::getInstance();
+        }
+
+        public static function getInstance() {
+            if(!(self::$_instance instanceof self)){
+                self::$_instance = new self();
+            }
+            return self::$_instance;
+        }
 
         function listCart(){
             $token=$_POST['token'];
-            $token=decode($token);
+            $token=$this->$middleware->decode($token);
             if ($token['invalid_token'] == true) {
                 $result['invalid_token']=true;
             }else{
@@ -26,7 +34,7 @@
                 }
                 $result['cart_products']=$resArray;
                 $result['invalid_token']=false;
-                $result['token']=encode($userid);
+                $result['token']=$this->$middleware->encode($userid);
                 connect::close($conexion);
             }
             return $result;
@@ -34,7 +42,7 @@
 
         function menuCart(){
             $token=$_POST['token'];
-            $token=decode($token);
+            $token=$this->$middleware->decode($token);
             if ($token['invalid_token'] == true) {
                 $result['invalid_token']=true;
             }else{
@@ -49,7 +57,7 @@
                 $row = $res->fetch_assoc();
                 $result['num_products']=$row['numproducts'];
                 $result['invalid_token']=false;
-                $result['token']=encode($userid);
+                $result['token']=$this->$middleware->encode($userid);
                 connect::close($conexion);
             }
             return $result;
@@ -59,7 +67,7 @@
         function addQuant(){
             $token=$_POST['token'];
             $videogameid=$_POST['idproduct'];
-            $token=decode($token);
+            $token=$this->$middleware->decode($token);
             if ($token['invalid_token'] == true) {
                 $result['invalid_token']=true;
             }else{
@@ -71,7 +79,7 @@
                 $result['result']=$row['result'];
                 $result['quant']=$row['quant'];
                 $result['invalid_token']=false;
-                $result['token']=encode($userid);
+                $result['token']=$this->$middleware->encode($userid);
                 connect::close($conexion);
             }
             return $result;
@@ -80,7 +88,7 @@
         function substQuant(){
             $token=$_POST['token'];
             $videogameid=$_POST['idproduct'];
-            $token=decode($token);
+            $token=$this->$middleware->decode($token);
             if ($token['invalid_token'] == true) {
                 $result['invalid_token']=true;
             }else{
@@ -92,7 +100,7 @@
                 $result['result']=$row['result'];
                 $result['quant']=$row['quant'];
                 $result['invalid_token']=false;
-                $result['token']=encode($userid);
+                $result['token']=$this->$middleware->encode($userid);
                 connect::close($conexion);
             }
             return $result;
@@ -100,7 +108,7 @@
 
         function totalCart(){
             $token=$_POST['token'];
-            $token=decode($token);
+            $token=$this->$middleware->decode($token);
             if ($token['invalid_token'] == true) {
                 $result['invalid_token']=true;
             }else{
@@ -112,7 +120,7 @@
                 $row = $res->fetch_assoc();
                 $result['total_cart']=$row['totalCart'];
                 $result['invalid_token']=false;
-                $result['token']=encode($userid);
+                $result['token']=$this->$middleware->encode($userid);
                 connect::close($conexion);
             }
             return $result;
@@ -120,7 +128,7 @@
 
         function checkout(){
             $token=$_POST['token'];
-            $token=decode($token);
+            $token=$this->$middleware->decode($token);
             if ($token['invalid_token'] == true) {
                 $result['invalid_token']=true;
             }else{
@@ -130,7 +138,7 @@
                 $conexion = connect::con();
                 $res = mysqli_query($conexion, $sql);
                 $result['invalid_token']=false;
-                $result['token']=encode($userid);
+                $result['token']=$this->$middleware->encode($userid);
                 connect::close($conexion);
             }
             return $result;
