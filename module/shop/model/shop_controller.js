@@ -101,6 +101,8 @@ function printProducts(numberofpages,limit,offset,data) {
                     $('<span></span>').attr({'class':'views'}).text(data[i].views).appendTo('#'+data[i].id+' .divbutton');
                     $('<img></img>').attr({'src':'/module/shop/view/img/eye.png','class':'eye'}).appendTo('#'+data[i].id+' .divbutton');
                     $('<span></span>').attr({'class':'price'}).text(data[i].precio+'€').appendTo('#'+data[i].id+' .divbutton');
+                    $('<button></button>').attr({'id':data[i].id,'class':'showdetails'}).text('Show details').appendTo('#'+data[i].id+' .divbutton');
+                    $('<img></img>').attr({'id':'cart-'+data[i].id,'src':'module/menu/view/img/cart.png','style':'height: 30px;','class':'cartbtn_shop'}).appendTo('#'+data[i].id+' .divbutton');
                 }else{
                     friendlyURL('?page=shop&op=showlike').then(function(url) {
                         ajaxPromise(url, 'POST', 'JSON',{'token':token,'idproduct':data[i].id}).then(function(datalike){
@@ -139,6 +141,8 @@ function printProducts(numberofpages,limit,offset,data) {
                     $('<span></span>').attr({'class':'views'}).text(data[i].views).appendTo('#'+data[i].id+' .divbutton');
                     $('<img></img>').attr({'src':'/module/shop/view/img/eye.png','class':'eye'}).appendTo('#'+data[i].id+' .divbutton');
                     $('<span></span>').attr({'class':'price'}).text(data[i].precio+'€').appendTo('#'+data[i].id+' .divbutton');
+                    $('<button></button>').attr({'id':data[i].id,'class':'showdetails'}).text('Show details').appendTo('#'+data[i].id+' .divbutton');
+                    $('<img></img>').attr({'id':'cart-'+data[i].id,'src':'module/menu/view/img/cart.png','style':'height: 30px;','class':'cartbtn_shop'}).appendTo('#'+data[i].id+' .divbutton');
                 }else{
                     friendlyURL('?page=shop&op=showlike').then(function(url) {
                         ajaxPromise(url, 'POST', 'JSON',{'token':token,'idproduct':data[i].id}).then(function(datalike){

@@ -16,6 +16,7 @@ class router {
     }// end_getInstance
 
     function __construct() {
+        
         if(isset($_GET['page'])) {
             $this -> uriModule = ($_GET['page']);
         } else {
@@ -43,7 +44,7 @@ class router {
             // var_dump($this -> loadModule(), $this -> loadFunction());
             call_user_func(array($this -> loadModule(), $this -> loadFunction()));
         }catch(Exception $e) {
-            //error
+            // var_dump($e);
         }// end_catch
     }// end_routingStart
     

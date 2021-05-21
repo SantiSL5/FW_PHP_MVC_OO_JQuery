@@ -21,7 +21,7 @@
             $age=$_POST['age'];
             $genero=$_POST['genero'];
             $nombre=$_POST['search'];
-            $sql2 = "SELECT COUNT(id) count FROM videogames WHERE plataforma LIKE '%$plataform%' AND clasificacion LIKE '%$age%' AND generos LIKE '%$genero%' AND nombre LIKE '$nombre' ORDER BY views";
+            $sql2 = "SELECT COUNT(id) AS count FROM videogames WHERE plataforma LIKE '%$plataform%' AND clasificacion LIKE '%$age%' AND generos LIKE '%$genero%' AND nombre LIKE '$nombre' ORDER BY views";
             $sql = "SELECT * FROM videogames WHERE precio BETWEEN $minrange AND $maxrange AND plataforma LIKE '%$plataform%' AND clasificacion LIKE '%$age%' AND generos LIKE '%$genero%' AND nombre LIKE '%$nombre%' ORDER BY views DESC";
             $conexion = connect::con();
             $res = mysqli_query($conexion, $sql);
@@ -105,11 +105,15 @@
                 WHERE iduser=$userid && idvideogame=$idproduct";
                 $conexion = connect::con();
                 $res = mysqli_query($conexion, $sql);
-                $row = $res->fetch_assoc();
-                if ($row['iduser']==$userid && $row['idvideogame']==$idproduct) {
-                    $result['like']=true;
-                }else {
+                if (!$res) {
                     $result['like']=false;
+                }else{
+                    $row = $res->fetch_assoc();
+                    if ($row['iduser']==$userid && $row['idvideogame']==$idproduct) {
+                        $result['like']=true;
+                    }else {
+                        $result['like']=false;
+                    }
                 }
                 $result['invalid_token']=false;
                 $result['token']=$this->$middleware->encode($userid);

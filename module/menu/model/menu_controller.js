@@ -42,7 +42,7 @@ function menu_login() {
             ajaxPromise(url, 'POST', 'JSON',{'token':token}).then(function(data) {
                 check_validtoken(data['invalid_token'],data['token']);
                 $('<a></a>').attr({'id':'username_menu','class':'nav-link'}).text(data['username']).appendTo('#account-navbar ul');
-                $('<img/>').attr({'id':'avatar_menu','src':data['avatar']}).appendTo('#account-navbar ul');
+                $('<img/>').attr({'id':'avatar_menu','src':data['avatar'],'style':'height: 40px;'}).appendTo('#account-navbar ul');
                 $('<button/>').attr({'id':'logoutbtn-nav','class':'btn btn-outline-success me-2'}).text('Logout').appendTo('#account-navbar ul');
                 logoutbtn_navclick();
                 menu_cart();

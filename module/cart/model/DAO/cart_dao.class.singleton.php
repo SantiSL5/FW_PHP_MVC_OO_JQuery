@@ -29,10 +29,14 @@
                 WHERE c.iduser=$userid";
                 $conexion = connect::con();
                 $res = mysqli_query($conexion, $sql);
-                while($row = $res->fetch_array(MYSQLI_ASSOC)) {
-                    $resArray[] = $row;
+                if ($res) {
+                    while($row = $res->fetch_array(MYSQLI_ASSOC)) {
+                        $resArray[] = $row;
+                    }
+                    $result['cart_products']=$resArray;
+                }else {
+                    $result['cart_products']=null;
                 }
-                $result['cart_products']=$resArray;
                 $result['invalid_token']=false;
                 $result['token']=$this->$middleware->encode($userid);
                 connect::close($conexion);
@@ -47,15 +51,19 @@
                 $result['invalid_token']=true;
             }else{
                 $userid=$token['userid'];
-                $sql = "SELECT COUNT(*) numproducts
+                $sql = "SELECT COUNT(*) AS numproducts
                 FROM cart c
                 INNER JOIN videogames v
                 ON v.id=c.idvideogame
                 WHERE c.iduser=$userid";
                 $conexion = connect::con();
                 $res = mysqli_query($conexion, $sql);
-                $row = $res->fetch_assoc();
-                $result['num_products']=$row['numproducts'];
+                if (!$res) {
+                    $result['num_products']=0;
+                }else{
+                    $row = $res->fetch_assoc();
+                    $result['num_products']=$row['numproducts'];
+                }
                 $result['invalid_token']=false;
                 $result['token']=$this->$middleware->encode($userid);
                 connect::close($conexion);

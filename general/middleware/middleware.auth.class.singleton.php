@@ -16,7 +16,7 @@
         }
 
         function decode($token){
-            $databaseConfig = include (SITE_ROOT . "/credentials/credentials.php");
+            $databaseConfig = include (SITE_ROOT . "/general/credentials/credentials.php");
             $secret = $databaseConfig['secret'];
             $tokenjson=$this->$jwt->decode($token,$secret);
             $tokendecoded=json_decode($tokenjson,true);
@@ -35,7 +35,7 @@
         }
     
         function encode($userid){
-            $databaseConfig = include (SITE_ROOT . "/credentials/credentials.php");
+            $databaseConfig = include (SITE_ROOT . "/general/credentials/credentials.php");
             $secret = $databaseConfig['secret'];
             ////////////////////////////////////////////////
             //https://github.com/miguelangel-nubla/JWT-PHP//
@@ -43,12 +43,21 @@
             $header = '{"typ":"JWT", "alg":"HS256"}';
             $iat=time();
             $exp=time()+(60 * 60);
+
+            if (strpos($userid, '"') !== false) {
+                $payload = '{
+                    "iat":'.$iat.', 
+                    "exp":'.$exp.',
+                    "userid":'.$userid.'
+                }';
+            }else {
+                $payload = '{
+                    "iat":'.$iat.', 
+                    "exp":'.$exp.',
+                    "userid":'.'"'.$userid.'"'.'
+                }';
+            }
             
-            $payload = '{
-                "iat":'.$iat.', 
-                "exp":'.$exp.',
-                "userid":'.$userid.'
-            }';
             $result = $this->$jwt->encode($header, $payload, $secret);
             return $result;
         }

@@ -17,8 +17,21 @@ class mail {
                 }else{
                     $html="<p>From $emailcontact</p><p>Message: $message</p>";
                 }
-
                 break;
+            case 'validate':
+                $emailto=$email['email'];
+                $token_link=$email['token'];
+                $subject="Validate Account";
+                $totype="Client";
+                $html="<p>This email is valid for 1 hour</p><p>Click on the link to validate the account:<a href=$token_link>Validate account</a></p>";
+                break;
+            case 'recover_password':
+                $emailto=$email['email'];
+                $token_link=$email['token'];
+                $subject="Recover passowrd";
+                $totype="Client";
+                $html="<p>This email is valid for 1 hour</p><p>Click on the link to recover your password:<a href=$token_link>Recover</a></p>";
+                break;                
         }// end_switch
             // case 'admin';
                 
