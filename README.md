@@ -78,5 +78,5 @@ Translate | This module is implemented in the headbar, it translates using JSON 
 ## Other technologies
 * [Boostrap](https://getbootstrap.com/)
 * [OWL Carousel](https://owlcarousel2.github.io/OwlCarousel2/)
-* gravatar: [Gravatar](https://es.gravatar.com/)
+* [Gravatar](https://es.gravatar.com/)
 
